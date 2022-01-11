@@ -44,6 +44,18 @@ def predict_best_wordle_guesses(words):
 
     return best_guesses
 
+def filter_words(words, result_filter):
+    words = {w for w in words if result_filter(w)}
+
+    if DEBUG:
+        print(f"\nFiltered down to {len(words)} words")
+        print("A few samples:")
+        poppable_copy = set(words)
+        for _ in range(10):
+            print(poppable_copy.pop())
+
+    return words
+
 def main(args=None):
     args = args or sys.argv[1:]
 
@@ -68,13 +80,7 @@ def main(args=None):
             return False
         return True
 
-    words = {w for w in words if result_filter(w)}
-    print(f"\nFiltered down to {len(words)} words")
-    print("A few samples:")
-    poppable_copy = set(words)
-    for _ in range(10):
-        print(poppable_copy.pop())
-
+    words = filter_words(words, result_filter)
     words = predict_best_wordle_guesses(words)
 
     print("\n*** Chose `route` ***")
@@ -91,13 +97,7 @@ def main(args=None):
             return False
         return True
 
-    words = {w for w in words if result_filter(w)}
-    print(f"\nFiltered down to {len(words)} words")
-    print("A few samples:")
-    poppable_copy = set(words)
-    for _ in range(10):
-        print(poppable_copy.pop())
-
+    words = filter_words(words, result_filter)
     words = predict_best_wordle_guesses(words)
 
     print("\n*** Chose `forge` ***")
@@ -110,13 +110,7 @@ def main(args=None):
             return False
         return True
 
-    words = {w for w in words if result_filter(w)}
-    print(f"\nFiltered down to {len(words)} words")
-    print("A few samples:")
-    poppable_copy = set(words)
-    for _ in range(10):
-        print(poppable_copy.pop())
-
+    words = filter_words(words, result_filter)
     words = predict_best_wordle_guesses(words)
 
 
