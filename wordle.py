@@ -98,14 +98,32 @@ class Solver(object):
         filter_list = []
         for i, (c, m) in enumerate(zip(ask, answer)):
             if m == Match.NO:
-                filter_list.append(lambda word: c not in word)
+                filter_list.append(self._build_no_match(c))
             elif m == Match.IN_WORD:
-                filter_list.append(lambda word: (c in word) and (word[i] != c))
+                filter_list.append(self._build_in_word_match(c, i))
             elif m == Match.AT_POSITION:
-                filter_list.append(lambda word: word[i] == c)
+                filter_list.append(self._build_at_position_match(c, i))
 
         def word_filter(word):
             return all(f(word) for f in filter_list)
 
         return word_filter
+
+    def _build_no_match(self, c):
+        """Build a filter function that passes when word does *not* contain `c`"""
+        def no_match(word):
+            return c not in word
+        return no_match
+
+    def _build_in_word_match(self, c, i):
+        """Build a filter function that passes when word contains `c`, but not at w[i]"""
+        def in_word_match(word):
+            return (c in word) and (word[i] != c)
+        return in_word_match
+
+    def _build_at_position_match(self, c, i):
+        """Build a filter function that passes when word has `c` at position `i`"""
+        def at_position_match(word):
+            return word[i] == c
+        return at_position_match
 

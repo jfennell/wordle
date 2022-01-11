@@ -60,13 +60,12 @@ def test_longer_word():
     assert not W.is_win(result)
 
 
-@pytest.mark.skip("Disabling while I test the filter builder")
 def test_solve(vocab):
     W = Wordle("hello")
     S = Solver(vocab)
     solution = S.solve(W)
     assert solution == "hello"
-    assert W.num_guesses < 100 # Trying to cause a break
+    assert W.num_guesses < 10 
 
 
 def test_build_filter_simple_at_position():
@@ -110,7 +109,6 @@ def test_build_filter_simple_in_word():
     assert not _filter("aardvark")
     assert _filter("bark")
 
-@pytest.mark.skip("Disabling in favor of simpler tests for now")
 def test_build_filter_complex():
     S = Solver([])
     ask = "help"
@@ -121,4 +119,4 @@ def test_build_filter_complex():
     assert not _filter("h")
     assert _filter("xeeelp")
     assert not _filter("xelp")
-    assert _filter("pelr")
+    assert _filter("perl")
