@@ -2,6 +2,8 @@ import collections
 import sys
 import os.path
 
+DEBUG = True
+
 def get_words(path, _filter=None):
     with open(path) as f:
         words = {w.strip() for w in f.read().split()}
@@ -15,6 +17,33 @@ def score_word(word, letter_counts):
     letters = set(word)
     return sum(letter_counts.get(l, 0) for l in letters)
 
+def predict_best_wordle_guesses(words):
+    """
+    Given a set of wordle words, analyze which word will
+    heuristically best explore the remaining vocabulary.
+    """
+    letter_counts = collections.Counter(''.join(words))
+
+    # TODO: Clean this up. Either remove or add actual log statements
+    if DEBUG:
+        print("\nThe most common letters are:")
+        for (k, v) in letter_counts.most_common():
+            print(f"{k}: {v}")
+
+    best_guesses = sorted(
+        words, 
+        key=lambda w: score_word(w, letter_counts),
+        reverse=True
+    )
+
+    if DEBUG:
+        print()
+        print("\nThe best starting words")
+        for w in best_guesses[:10]:
+            print(w)
+
+    return best_guesses
+
 def main(args=None):
     args = args or sys.argv[1:]
 
@@ -23,16 +52,7 @@ def main(args=None):
 
     print(f"Filtered down to {len(words)} words")
 
-    letter_counts = collections.Counter(''.join(words))
-    print("\nThe most common letters are:")
-    for (k, v) in letter_counts.most_common():
-        print(f"{k}: {v}")
-
-    words = sorted(words, key=lambda w: score_word(w, letter_counts), reverse=True)
-    print()
-    print("\nThe best starting words")
-    for w in words[:10]:
-        print(w)
+    words = predict_best_wordle_guesses(words)
 
     print("\n*** Chose `arose` ***")
     # arose
@@ -55,16 +75,7 @@ def main(args=None):
     for _ in range(10):
         print(poppable_copy.pop())
 
-    letter_counts = collections.Counter(''.join(words))
-    print("\nThe most common letters are:")
-    for (k, v) in letter_counts.most_common():
-        print(f"{k}: {v}")
-
-    words = sorted(words, key=lambda w: score_word(w, letter_counts), reverse=True)
-    print()
-    print("\nThe best 2nd round words")
-    for w in words[:10]:
-        print(w)
+    words = predict_best_wordle_guesses(words)
 
     print("\n*** Chose `route` ***")
     # route
@@ -87,16 +98,7 @@ def main(args=None):
     for _ in range(10):
         print(poppable_copy.pop())
 
-    letter_counts = collections.Counter(''.join(words))
-    print("\nThe most common letters are:")
-    for (k, v) in letter_counts.most_common():
-        print(f"{k}: {v}")
-
-    words = sorted(words, key=lambda w: score_word(w, letter_counts), reverse=True)
-    print()
-    print("\nThe best 2nd round words")
-    for w in words[:10]:
-        print(w)
+    words = predict_best_wordle_guesses(words)
 
     print("\n*** Chose `forge` ***")
     # forge
@@ -115,17 +117,7 @@ def main(args=None):
     for _ in range(10):
         print(poppable_copy.pop())
 
-    letter_counts = collections.Counter(''.join(words))
-    print("\nThe most common letters are:")
-    for (k, v) in letter_counts.most_common():
-        print(f"{k}: {v}")
-
-    words = sorted(words, key=lambda w: score_word(w, letter_counts), reverse=True)
-    print()
-    print("\nThe best 3nd round words")
-    for w in words[:10]:
-        print(w)
-
+    words = predict_best_wordle_guesses(words)
 
 
 
