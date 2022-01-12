@@ -64,7 +64,7 @@ def test_solve(vocab):
     W = Wordle("hello")
     S = Solver(vocab)
     solution = S.solve(W)
-    assert solution == "hello"
+    assert solution[-1] == "hello"
     assert W.num_guesses < 10 
 
 

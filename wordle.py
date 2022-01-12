@@ -100,6 +100,7 @@ class Solver(object):
 
     def solve(self, wordle_instance, ask_multi=False):
         words = list(self.vocab)
+        guess_path = []
 
         while True:
             words = self._predict_best_wordle_guesses(words)
@@ -112,6 +113,7 @@ class Solver(object):
                 answer = wordle_instance.ask(ask)
             else:
                 ask, answer = wordle_instance.ask(words[:10])
+            guess_path.append(ask)
 
             if wordle_instance.is_win(answer):
                 print(f"Winner! {ask}")
@@ -120,7 +122,7 @@ class Solver(object):
             _filter = self._build_filter(ask, answer)
             words = [w for w in words if _filter(w)]
 
-        return ask
+        return guess_path
 
     @classmethod
     def _score_word(cls, word, letter_counts):
