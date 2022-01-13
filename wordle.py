@@ -12,6 +12,9 @@ Ask the World object with guess words
 
 import collections
 import enum
+from typing import Dict, List, Tuple, Iterable, Union, Callable
+
+WordFilter = Callable[[str], bool]
 
 class Match(enum.Enum):
     NO = enum.auto()
@@ -19,15 +22,15 @@ class Match(enum.Enum):
     AT_POSITION = enum.auto()
 
 class Wordle(object):
-    def __init__(self, secret_word):
+    def __init__(self, secret_word: str) -> None:
         self.secret_word = secret_word
         self.secret_word_letters = set(secret_word)
         self.num_guesses = 0
 
-    def ask(self, guess):
+    def ask(self, guess: str) -> List[Match]:
         self.num_guesses += 1
 
-        answer = []
+        answer: List[Match] = []
         for i, c in enumerate(guess):
             if c == self.secret_word[i]:
                 answer.append(Match.AT_POSITION)
@@ -37,10 +40,10 @@ class Wordle(object):
                 answer.append(Match.NO)
         return answer
 
-    def is_win(self, answer):
+    def is_win(self, answer: List[Match]) -> bool:
         return answer == [Match.AT_POSITION]*len(self.secret_word)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'Wordle({self.secret_word}, {self.num_guesses})'
 
 
@@ -49,10 +52,10 @@ class InteractiveWordle(object):
     Interactive solver to help a human 
     efficiently solve a Wordle puzzle
     """
-    def __init__(self):
+    def __init__(self) -> None:
         self.num_guesses = 0
 
-    def ask(self, guesses):
+    def ask(self, guesses: List[str]) -> Tuple[str, List[Match]]:
         while True:
             print(f'The solver\'s top guesses are:')
             for guess in guesses:
@@ -74,7 +77,7 @@ class InteractiveWordle(object):
                 print('Invalid input. Try again.\n')
                 continue
 
-            answer = []
+            answer: List[Match] = []
             for c in raw_answer:
                 if c == 'n':
                     answer.append(Match.NO)
@@ -87,18 +90,18 @@ class InteractiveWordle(object):
 
             return ask, answer
 
-    def is_win(self, answer):
+    def is_win(self, answer: List[Match]) -> bool:
         return answer == [Match.AT_POSITION]*5
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'InteractiveWordle()'
 
 
 class Solver(object):
-    def __init__(self, vocab):
+    def __init__(self, vocab: Iterable[str]) -> None:
         self.vocab = vocab
 
-    def solve(self, wordle_instance, ask_multi=False):
+    def solve(self, wordle_instance: Union[Wordle, InteractiveWordle]) -> List[str]:
         words = list(self.vocab)
         guess_path = []
 
@@ -109,10 +112,12 @@ class Solver(object):
                 raise ValueError(f'Failed to solve {wordle_instance}')
 
             ask = words[0]
-            if not ask_multi:
+            if isinstance(wordle_instance, Wordle):
                 answer = wordle_instance.ask(ask)
-            else:
+            elif isinstance(wordle_instance, InteractiveWordle):
                 ask, answer = wordle_instance.ask(words[:10])
+            else:
+                raise NotImplementedError('This part of the solver is coupled to the Worlde instance')
             guess_path.append(ask)
 
             if wordle_instance.is_win(answer):
@@ -125,12 +130,12 @@ class Solver(object):
         return guess_path
 
     @classmethod
-    def _score_word(cls, word, letter_counts):
+    def _score_word(cls, word: str, letter_counts: Dict[str, int]) -> int:
         letters = set(word)
         return sum(letter_counts.get(l, 0) for l in letters)
 
     @classmethod
-    def _predict_best_wordle_guesses(cls, words):
+    def _predict_best_wordle_guesses(cls, words: Iterable[str]) -> List[str]:
         """
         Given a set of wordle words, analyze which word will
         heuristically best explore the remaining vocabulary.
@@ -146,7 +151,7 @@ class Solver(object):
         return best_guesses
 
     @classmethod
-    def _build_filter(cls, ask, answer):
+    def _build_filter(cls, ask: str, answer: List[Match]) -> WordFilter:
         """Given a word we "asked" and a list(Match), referred to an an Answer,
         construct a filter that only matches words that conform to the constraints
         from the answer
@@ -161,29 +166,29 @@ class Solver(object):
             elif m == Match.AT_POSITION:
                 filter_list.append(cls._build_at_position_match(c, i))
 
-        def word_filter(word):
+        def word_filter(word: str) -> bool:
             return all(f(word) for f in filter_list)
 
         return word_filter
 
     @classmethod
-    def _build_no_match(cls, c):
+    def _build_no_match(cls, c: str) -> WordFilter:
         """Build a filter function that passes when word does *not* contain `c`"""
-        def no_match(word):
+        def no_match(word: str) -> bool:
             return c not in word
         return no_match
 
     @classmethod
-    def _build_in_word_match(cls, c, i):
+    def _build_in_word_match(cls, c: str, i: int) -> WordFilter:
         """Build a filter function that passes when word contains `c`, but not at w[i]"""
-        def in_word_match(word):
+        def in_word_match(word: str) -> bool:
             return (c in word) and (word[i] != c)
         return in_word_match
 
     @classmethod
-    def _build_at_position_match(cls, c, i):
+    def _build_at_position_match(cls, c: str, i: int) -> WordFilter:
         """Build a filter function that passes when word has `c` at position `i`"""
-        def at_position_match(word):
+        def at_position_match(word: str) -> bool:
             return word[i] == c
         return at_position_match
 

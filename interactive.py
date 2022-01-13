@@ -20,7 +20,7 @@ def main(args=None):
     IW = wordle.InteractiveWordle()
     S = wordle.Solver(vocab)
 
-    S.solve(IW, ask_multi=True)
+    S.solve(IW)
 
 if __name__ == '__main__':
     main()
