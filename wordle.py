@@ -116,7 +116,7 @@ class Solver(object):
             guess_path.append(ask)
 
             if wordle_instance.is_win(answer):
-                print(f"Winner! {ask}")
+                #print(f"Winner! {ask}")
                 break
 
             _filter = self._build_filter(ask, answer)

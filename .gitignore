@@ -3,3 +3,4 @@ bin/
 lib/
 *.swp
 __pycache__/
+solve_path_out.json
