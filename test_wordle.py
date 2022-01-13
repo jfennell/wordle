@@ -1,10 +1,10 @@
 import pytest
 
-from typing import Iterable
+from typing import Collection
 
 from wordle import Match, Wordle, Solver
 
-def __load_vocab() -> Iterable[str]:
+def __load_vocab() -> Collection[str]:
     path = 'words_alpha.txt'
 
     with open(path) as f:
@@ -16,7 +16,7 @@ def __load_vocab() -> Iterable[str]:
 __vocab = __load_vocab()
 
 @pytest.fixture
-def vocab() -> Iterable[str]:
+def vocab() -> Collection[str]:
     """Load from file once, but copy vocab for each test that wants it"""
     return set(__vocab)
 
@@ -55,7 +55,7 @@ def test_longer_word() -> None:
     assert not W.is_win(result)
 
 
-def test_solve(vocab: Iterable[str]) -> None:
+def test_solve(vocab: Collection[str]) -> None:
     W = Wordle("hello")
     S = Solver(vocab)
     solution = S.solve(W)

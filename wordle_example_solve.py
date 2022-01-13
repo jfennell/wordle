@@ -1,10 +1,13 @@
 import collections
 import sys
 import os.path
+from typing import Callable, Optional, Collection, Dict, List
+
+StrFilter = Callable[[str], bool]
 
 DEBUG = True
 
-def get_words(path, _filter=None):
+def get_words(path: str, _filter: Optional[StrFilter] = None) -> Collection[str]:
     with open(path) as f:
         words = {w.strip() for w in f.read().split()}
 
@@ -13,11 +16,11 @@ def get_words(path, _filter=None):
 
     return words
 
-def score_word(word, letter_counts):
+def score_word(word: str, letter_counts: Dict[str, int]) -> int:
     letters = set(word)
     return sum(letter_counts.get(l, 0) for l in letters)
 
-def predict_best_wordle_guesses(words):
+def predict_best_wordle_guesses(words: Collection[str]) -> List[str]:
     """
     Given a set of wordle words, analyze which word will
     heuristically best explore the remaining vocabulary.
@@ -44,7 +47,7 @@ def predict_best_wordle_guesses(words):
 
     return best_guesses
 
-def filter_words(words, result_filter):
+def filter_words(words: Collection[str], result_filter: StrFilter) -> Collection[str]:
     words = {w for w in words if result_filter(w)}
 
     if DEBUG:
@@ -56,7 +59,7 @@ def filter_words(words, result_filter):
 
     return words
 
-def main(args=None):
+def main(args: Optional[List[str]] = None) -> None:
     args = args or sys.argv[1:]
 
     path = args[0]
@@ -69,7 +72,7 @@ def main(args=None):
     print("\n*** Chose `arose` ***")
     # arose
     # r & o are in, a & s are out, e is at the end
-    def result_filter(w):
+    def result_filter_1(w: str) -> bool:
         if 'a' in w or 's' in w:
             return False
         if w[1] == 'r' or w[2] == 'o':
@@ -80,13 +83,13 @@ def main(args=None):
             return False
         return True
 
-    words = filter_words(words, result_filter)
+    words = filter_words(words, result_filter_1)
     words = predict_best_wordle_guesses(words)
 
     print("\n*** Chose `route` ***")
     # route
     # 'r' is not at the start. 'o' & 'e' are right. 'u', 't' out
-    def result_filter(w):
+    def result_filter_2(w: str) -> bool:
         if 'u' in w or 't' in w:
             return False
         if w[0] == 'r':
@@ -97,20 +100,20 @@ def main(args=None):
             return False
         return True
 
-    words = filter_words(words, result_filter)
+    words = filter_words(words, result_filter_2)
     words = predict_best_wordle_guesses(words)
 
     print("\n*** Chose `forge` ***")
     # forge
     # 'orge' is all correct and in the right places. 'f' is not in
-    def result_filter(w):
+    def result_filter_3(w: str) -> bool:
         if 'f' in w:
             return False
         if w[1] != 'o' or w[2] != 'r' or w[3] != 'g' or  w[4] != 'e':
             return False
         return True
 
-    words = filter_words(words, result_filter)
+    words = filter_words(words, result_filter_3)
     words = predict_best_wordle_guesses(words)
 
 

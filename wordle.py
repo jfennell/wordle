@@ -12,7 +12,7 @@ Ask the World object with guess words
 
 import collections
 import enum
-from typing import Dict, List, Tuple, Iterable, Union, Callable
+from typing import Dict, List, Tuple, Collection, Union, Callable
 
 WordFilter = Callable[[str], bool]
 
@@ -98,7 +98,7 @@ class InteractiveWordle(object):
 
 
 class Solver(object):
-    def __init__(self, vocab: Iterable[str]) -> None:
+    def __init__(self, vocab: Collection[str]) -> None:
         self.vocab = vocab
 
     def solve(self, wordle_instance: Union[Wordle, InteractiveWordle]) -> List[str]:
@@ -135,7 +135,7 @@ class Solver(object):
         return sum(letter_counts.get(l, 0) for l in letters)
 
     @classmethod
-    def _predict_best_wordle_guesses(cls, words: Iterable[str]) -> List[str]:
+    def _predict_best_wordle_guesses(cls, words: Collection[str]) -> List[str]:
         """
         Given a set of wordle words, analyze which word will
         heuristically best explore the remaining vocabulary.
