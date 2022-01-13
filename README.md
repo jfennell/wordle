@@ -3,7 +3,7 @@ Some scripts & analyses around the game Wordle
 
 ## TODO
 - [x] Make an interactive solver that I can use to solve the puzzles as a human
-- [ ] Make a script that looks at the solve paths for all different possible secret words
+- [x] Make a script that looks at the solve paths for all different possible secret words
 - [ ] Add all the fun things like type annotations :-)
 
 ## Thanks / Resources
