@@ -3,10 +3,11 @@ Script to run the Wordle interactive solver.
 """
 
 import sys
+from typing import Optional, List
 
 import wordle
 
-def main(args=None):
+def main(args: Optional[List[str]] = None) -> None:
     args = args or sys.argv[1:]
 
     path = 'words_alpha.txt'
