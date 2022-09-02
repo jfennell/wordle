@@ -23,3 +23,4 @@ The solver iteratively:
 ## Thanks / Resources
 - https://github.com/dwyl/english-words is the source of the word dictionary
 - You! Thanks for reading this far. I have no idea how you found the page, but I hope you have some fun with this.
+

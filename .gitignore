@@ -1,6 +1,8 @@
 .Python
 bin/
 lib/
+etc/
+share/
 *.swp
 __pycache__/
 solve_path_out.json
