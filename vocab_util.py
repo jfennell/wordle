@@ -19,7 +19,7 @@ def get_weighted_vocab(path):
     with open(path) as f:
         for l in f.read().split():
             w, c = l.split(',', 2)
-            vocab[w] = c
+            vocab[w] = int(c)
     return vocab
 
 _loader_config = {
