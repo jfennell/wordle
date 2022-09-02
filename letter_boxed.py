@@ -7,11 +7,7 @@ import sys
 
 from typing import Dict, List, Tuple, Collection, Union, Callable, Optional
 
-# Arguable that this could be memoized, paramatrized by path
-def get_vocab(path='words_alpha.txt'):
-    with open(path) as f:
-        vocab = {w.strip() for w in f.read().split()}
-    return vocab
+from vocab_util import VocabLoader, DERIVED_VOCAB
 
 class LetterBoxed(object):
     #def __init__(self, sides: List[str], word_limit: int) -> None:
@@ -80,7 +76,8 @@ def print_by_num_unique_letters(wordset: set, filter_=None):
 def main(args: Optional[List[str]] = None) -> None:
     args = args or sys.argv[1:]
 
-    vocab = get_vocab()
+    VL = VocabLoader()
+    vocab = VL.load(DERIVED_VOCAB)
     letter_box = LetterBoxed(args)
     print(f'Using LetterBox: {letter_box}', file=sys.stderr)
     filtered_vocab = filter_vocab(letter_box, vocab)
