@@ -1,4 +1,0 @@
-[tool.pytest.ini_options]
-markers = [
-    "smoketest: brittle but end-to-end tests",
-]
