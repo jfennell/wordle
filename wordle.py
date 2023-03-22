@@ -13,6 +13,7 @@ Ask the World object with guess words
 import collections
 import enum
 from typing import Dict, List, Tuple, Collection, Union, Callable
+from math import log2
 
 WordFilter = Callable[[str], bool]
 
@@ -43,13 +44,27 @@ class Wordle(object):
     def is_win(self, answer: List[Match]) -> bool:
         return answer == [Match.AT_POSITION]*len(self.secret_word)
 
+    @classmethod
+    def compute_answer(cls, guess: str, secret: str) -> Tuple[Match]:
+        """Quick addition to make it easy to compute entropy"""
+        answer: List[Match] = []
+        secret_letters = set(secret)
+        for i, c in enumerate(guess):
+            if c == secret[i]:
+                answer.append(Match.AT_POSITION)
+            elif c in secret_letters:
+                answer.append(Match.IN_WORD)
+            else:
+                answer.append(Match.NO)
+        return tuple(answer)
+
     def __repr__(self) -> str:
         return f'Wordle({self.secret_word}, {self.num_guesses})'
 
 
 class InteractiveWordle(object):
     """
-    Interactive solver to help a human 
+    Interactive solver to help a human
     efficiently solve a Wordle puzzle
     """
     def __init__(self) -> None:
@@ -141,14 +156,44 @@ class Solver(object):
         heuristically best explore the remaining vocabulary.
         """
         letter_counts = collections.Counter(''.join(words))
+        entropies = cls._all_to_all_entropy(words)
+
+        # best_guesses = sorted(
+        #     words,
+        #     key=lambda w: cls._score_word(w, letter_counts),
+        #     reverse=True
+        # )
 
         best_guesses = sorted(
-            words, 
-            key=lambda w: cls._score_word(w, letter_counts),
+            words,
+            key=lambda w: entropies.get(w, 0.0),
             reverse=True
         )
 
         return best_guesses
+
+    @classmethod
+    def _all_to_all_entropy(cls, words: Collection[str]) -> Dict[str, float]:
+        word_to_entropy: Dict[str,float] = {}
+        for w in words:
+            word_to_entropy[w] = cls._word_entropy(w, words)
+        return word_to_entropy
+
+    @classmethod
+    def _word_entropy(cls, query: str, words: Collection[str]) -> float:
+        pattern_counter = collections.Counter()
+        for w in words:
+            pattern = Wordle.compute_answer(query, w)
+            pattern_counter[pattern] += 1
+
+        n = float(len(pattern_counter))
+        entropy: float = 0.0
+        for pattern, count in pattern_counter.items():
+            p = float(count)/n
+            entropy += p * log2(p)
+        entropy *= -1
+
+        return entropy
 
     @classmethod
     def _build_filter(cls, ask: str, answer: List[Match]) -> WordFilter:
@@ -191,4 +236,3 @@ class Solver(object):
         def at_position_match(word: str) -> bool:
             return word[i] == c
         return at_position_match
-
