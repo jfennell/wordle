@@ -3,4 +3,7 @@ bin/
 lib/
 *.swp
 __pycache__/
+share/
+etc/
 solve_path_out.json
+.ipynb_checkpoints

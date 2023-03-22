@@ -23,11 +23,7 @@ The solver iteratively:
 ## Thanks / Resources
 - https://github.com/dwyl/english-words is the source of the word dictionary
 - You! Thanks for reading this far. I have no idea how you found the page, but I hope you have some fun with this.
-<<<<<<< Updated upstream
-=======
-
 
 ## TODO
 - [ ] Update the vocab options to include one that is just the Wordle word list
 - [ ] Play with a new solver that better bounds the maximum "depth" of solve (inspired by reading wordle-bot summaries)
->>>>>>> Stashed changes
