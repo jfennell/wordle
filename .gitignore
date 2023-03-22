@@ -1,8 +1,6 @@
 .Python
 bin/
 lib/
-etc/
-share/
 *.swp
 __pycache__/
 share/
