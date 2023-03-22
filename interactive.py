@@ -6,18 +6,16 @@ import sys
 from typing import Optional, List
 
 import wordle
-from vocab_util import VocabLoader, WORDS_ALPHA_VOCAB, DERIVED_VOCAB
 
 def main(args: Optional[List[str]] = None) -> None:
     args = args or sys.argv[1:]
 
-    VL = VocabLoader()
-    if len(args) == 0:
-        vocab = VL.load(WORDS_ALPHA_VOCAB)
-    else:
-        # Rare case
-        vocab = VL.load(args[0])
+    path = 'words_alpha.txt'
+    if len(args) > 0:
+        path = args[0]
 
+    with open(path) as f:
+        vocab = {w.strip() for w in f.read().split()}
     vocab = {w for w in vocab if len(w) == 5}
 
     IW = wordle.InteractiveWordle()
